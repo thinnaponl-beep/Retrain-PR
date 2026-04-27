@@ -1,0 +1,48 @@
+<!-- ================= 1. Mobile Overlay ================= -->
+<div v-if="isMobileSidebarOpen" @click="isMobileSidebarOpen = false" class="fixed inset-0 bg-slate-900/60 z-20 md:hidden backdrop-blur-sm transition-opacity"></div>
+
+<!-- ================= 2. Sidebar Section ================= -->
+<aside :class="[
+        isMobileSidebarOpen ? 'translate-x-0' : '-translate-x-full',
+        isDesktopSidebarOpen ? 'md:w-64 md:translate-x-0' : 'md:w-0 md:-translate-x-full md:opacity-0 md:border-none'
+       ]" 
+       class="fixed inset-y-0 left-0 w-64 bg-white border-r border-slate-200 text-slate-700 flex flex-col shadow-xl z-30 transform transition-all duration-300 ease-in-out md:relative shrink-0 overflow-hidden">
+    
+    <!-- Logo Area -->
+    <div class="p-6 border-b border-slate-100 flex items-center gap-3 justify-between md:justify-start whitespace-nowrap min-w-[16rem]">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 bg-beneat-primary rounded-lg flex items-center justify-center font-bold text-white text-lg shadow-md">R</div>
+            <div>
+                <h2 class="text-xl font-bold text-slate-800 tracking-wide leading-tight">RMS</h2>
+                <p class="text-[10px] text-beneat-primary mt-0.5 uppercase tracking-wider font-semibold">Retrain Management</p>
+            </div>
+        </div>
+        <button @click="isMobileSidebarOpen = false" class="md:hidden text-slate-400 hover:text-slate-700">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+
+    <!-- Navigation -->
+    <nav class="flex-1 py-6 flex flex-col gap-2 px-4 overflow-y-auto whitespace-nowrap min-w-[16rem]">
+        <a href="#" class="flex items-center gap-3 px-4 py-3 bg-beneat-primary/10 text-beneat-primary font-bold rounded-lg transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span>Case Retain</span>
+        </a>
+        
+        <div class="mt-6 mb-2 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Partner Relation  (PRS)</div>
+        
+        <a href="https://script.google.com/a/macros/beneat.co/s/AKfycbxswzmocLIBJ5JrCMuhOZQuiw4vo_PDq3weBU5OKcziJyuEJ21dTtqQOqisoi6Ab195/exec" target="_blank" rel="noopener noreferrer" class="flex items-center gap-3 px-4 py-3 text-slate-500 hover:bg-slate-50 hover:text-beneat-primary rounded-lg transition-colors group">
+            <svg class="w-5 h-5 text-beneat-light group-hover:text-beneat-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path></svg>
+            <span class="text-sm font-medium">Partner Relation  (PRS)</span>
+        </a>
+    </nav>
+    
+    <!-- Profile -->
+    <div class="p-4 border-t border-slate-100 flex items-center gap-3 mt-auto whitespace-nowrap min-w-[16rem]">
+        <div class="w-8 h-8 rounded-full bg-beneat-primary flex items-center justify-center text-sm font-bold text-white">P</div>
+        <div class="text-sm truncate">
+            <p class="text-slate-800 font-bold truncate">อัครเดช (ผศ.ดร.นพ.พล.อ)</p>
+            <p class="text-xs text-slate-500 truncate">ผู้ดูแลระบบ</p>
+        </div>
+    </div>
+</aside>
