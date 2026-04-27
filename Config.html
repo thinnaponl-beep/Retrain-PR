@@ -1,0 +1,16 @@
+<!-- แยกส่วน Config ออกมาเพื่อให้จัดการ API Keys ได้ง่าย ไม่ปนกับโค้ด UI -->
+<script>
+    // 🔴 [CONFIG] ใส่ข้อมูลของคุณให้ถูกต้องที่นี่
+    const CONFIG = {
+        // 1. ข้อมูลสำหรับโปรเจกต์ Retrain Management (เก็บตาราง retrain_cases)
+        supabaseUrl: 'https://bnzlooehcmgsqgcwjqcj.supabase.co',
+        supabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJuemxvb2VoY21nc3FnY3dqcWNqIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjM5Mzc2MSwiZXhwIjoyMDkxOTY5NzYxfQ.ZswcbFK8tlJBV8ONQKuM8qNpEO4AJ0jVyd0JSfL-fBI',
+        
+        // 2. 🟢 ข้อมูลสำหรับโปรเจกต์แม่บ้าน (เก็บตาราง Database_Maids)
+        maidsSupabaseUrl: 'https://apsnkqgrkjtfsiydjcfd.supabase.co',
+        maidsSupabaseKey: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFwc25rcWdya2p0ZnNpeWRqY2ZkIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc3NjMwNjcwMywiZXhwIjoyMDkxODgyNzAzfQ.xlnbmC9rTuvoa8vGmvi1Oufik-zxifQpBrYL9sXAySI',
+        
+        gasUploadUrl: 'https://script.google.com/a/macros/beneat.co/s/AKfycbxC_WEr98vNAblasB1V4NFwCR10d7Qqgy2P4RjAyXwWe1AdFuS_NjoYKhN6H5zgTzMYpw/exec'
+    };
+</script>
+
