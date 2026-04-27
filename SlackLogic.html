@@ -1,0 +1,56 @@
+<script>
+/**
+ * 🔔 ระบบแจ้งเตือน Slack (Frontend Logic)
+ * ไฟล์นี้ไม่มี UI มีเฉพาะฟังก์ชันสำหรับประมวลผลการส่งแจ้งเตือน
+ * * วิธีใช้งาน: นำคำสั่ง <?!= include('SlackLogic'); ?> ไปวางไว้ในหน้า index.html (ก่อนปิด </body>)
+ */
+
+const SlackNotifier = {
+    
+    /**
+     * ฟังก์ชันหลักสำหรับยิงแจ้งเตือนไปยังแอดมิน (รองรับทั้งคนเดียวและหลายคน)
+     * @param {Array|string} slackIds - Slack User ID (ส่งเป็น String 1 คน หรือ Array ถ้ามีผู้ติดตามหลายคน)
+     * @param {string} message - ข้อความที่ต้องการแจ้งเตือน
+     */
+    sendAlert: async (slackIds, message) => {
+        // ทำให้รองรับทั้งแบบส่งคนเดียวและหลายคน (แปลงเป็น Array เสมอ)
+        const targets = Array.isArray(slackIds) ? slackIds : [slackIds];
+        
+        // กรองเอาเฉพาะค่าที่มี ID จริงๆ
+        const validTargets = targets.filter(id => id && id.trim() !== '');
+
+        if (validTargets.length === 0) {
+            console.log("ไม่มี Slack ID ให้แจ้งเตือน (ข้ามการส่ง)");
+            return;
+        }
+
+        // วนลูปส่งแจ้งเตือนให้ทีละคน (Direct Message)
+        for (const id of validTargets) {
+            await new Promise((resolve) => {
+                google.script.run
+                    .withSuccessHandler((res) => {
+                        console.log(`ส่งการแจ้งเตือนไปยัง ${id} สำเร็จ`);
+                        resolve(res);
+                    })
+                    .withFailureHandler((err) => {
+                        console.error(`ส่ง Slack ไปที่ ${id} ไม่สำเร็จ:`, err);
+                        resolve(null); // ปล่อยผ่านถ้า error เพื่อให้ไม่กระทบการทำงานของเว็บหลัก
+                    })
+                    .sendSlackNotificationNative(id, message);
+            });
+        }
+    },
+
+    /**
+     * Helper: สำหรับค้นหา Slack ID จากชื่อแอดมินที่เลือก
+     * @param {string} adminName - ชื่อแอดมิน (value1)
+     * @param {Array} adminList - รายชื่อแอดมินทั้งหมดจากฐานข้อมูล
+     * @returns {string|null} - คืนค่า Slack ID (value3) หรือ null
+     */
+    findSlackIdByName: (adminName, adminList) => {
+        if (!adminName || !adminList) return null;
+        const admin = adminList.find(a => a.value1 === adminName);
+        return admin ? admin.value3 : null;
+    }
+};
+</script>
