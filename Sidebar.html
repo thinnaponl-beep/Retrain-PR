@@ -24,9 +24,21 @@
 
     <!-- Navigation -->
     <nav class="flex-1 py-6 flex flex-col gap-2 px-4 overflow-y-auto whitespace-nowrap min-w-[16rem]">
-        <a href="#" class="flex items-center gap-3 px-4 py-3 bg-beneat-primary/10 text-beneat-primary font-bold rounded-lg transition-colors">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
-            <span>Case Retain</span>
+        
+        <!-- เมนู 1: หน้าหลัก (Case Retain) -->
+        <a href="#" onclick="navigateTo(''); return false;" 
+           id="nav-index"
+           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors group text-slate-500 hover:bg-slate-50">
+            <svg class="w-5 h-5 group-hover:text-beneat-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+            <span class="font-medium group-hover:text-beneat-primary">Case Retain</span>
+        </a>
+
+        <!-- เมนู 2: หน้ารายงาน (Report) -->
+        <a href="#" onclick="navigateTo('report'); return false;" 
+           id="nav-report"
+           class="flex items-center gap-3 px-4 py-3 rounded-lg transition-colors group text-slate-500 hover:bg-slate-50">
+            <svg class="w-5 h-5 group-hover:text-beneat-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            <span class="font-medium group-hover:text-beneat-primary">Report (สถิติ)</span>
         </a>
         
         <div class="mt-6 mb-2 px-2 text-[10px] font-bold text-slate-400 uppercase tracking-wider">Partner Relation  (PRS)</div>
@@ -37,12 +49,94 @@
         </a>
     </nav>
     
-    <!-- Profile -->
+    <!-- Profile (Dynamic Binding) -->
     <div class="p-4 border-t border-slate-100 flex items-center gap-3 mt-auto whitespace-nowrap min-w-[16rem]">
-        <div class="w-8 h-8 rounded-full bg-beneat-primary flex items-center justify-center text-sm font-bold text-white">P</div>
+        <div class="w-8 h-8 rounded-full bg-beneat-primary flex items-center justify-center text-sm font-bold text-white uppercase">
+            {{ currentUserProfile && currentUserProfile.value1 ? currentUserProfile.value1.charAt(0) : 'U' }}
+        </div>
         <div class="text-sm truncate">
-            <p class="text-slate-800 font-bold truncate">อัครเดช (ผศ.ดร.นพ.พล.อ)</p>
-            <p class="text-xs text-slate-500 truncate">ผู้ดูแลระบบ</p>
+            <p class="text-slate-800 font-bold truncate">
+                {{ currentUserProfile && currentUserProfile.value1 ? currentUserProfile.value1 : CURRENT_USER_EMAIL }}
+            </p>
+            <p class="text-xs text-slate-500 truncate">
+                {{ currentUserProfile ? ((currentUserProfile.department ? currentUserProfile.department + ' • ' : '') + (currentUserProfile.level || 'Staff')) : 'กำลังโหลดข้อมูล...' }}
+            </p>
         </div>
     </div>
 </aside>
+
+<!-- สคริปต์สำหรับ Highlight และจัดการ Navigation -->
+<script>
+    // 🟢 ฟังก์ชันสำหรับเปลี่ยนหน้า รักษาสถานะ /dev หรือ /exec อย่างถูกต้อง 100%
+    function navigateTo(pageParam) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: 'Loeding...',
+                text: 'กรุณารอสักครู่',
+                allowOutsideClick: false,
+                showConfirmButton: false,
+                didOpen: () => { Swal.showLoading(); }
+            });
+        }
+
+        try {
+            // ดึง URL จากหน้าต่างหลักที่เปิดอยู่โดยตรง (เพื่อรักษา /dev หรือ /exec)
+            const currentUrl = window.top.location.href;
+            const baseUrl = currentUrl.split('?')[0].split('#')[0]; // ล้าง Parameters ทิ้ง
+            
+            if (baseUrl && baseUrl.includes("script.google.com")) {
+                window.top.location.href = pageParam ? baseUrl + '?page=' + pageParam : baseUrl;
+                return;
+            }
+        } catch (e) {
+            console.log("Cross-origin restriction block");
+        }
+
+        // Fallback ทำงานเมื่อระบบถูกบล็อกจาก Iframe
+        let fallbackUrl = (typeof CONFIG !== 'undefined' && CONFIG.gasUploadUrl) ? CONFIG.gasUploadUrl.split('?')[0] : "";
+        if (fallbackUrl) {
+            window.top.location.href = pageParam ? fallbackUrl + '?page=' + pageParam : fallbackUrl;
+        }
+    }
+
+    // 🟢 ฟังก์ชันตรวจสอบและไฮไลต์เมนูที่ถูกเลือก
+    function applyMenuStyles(isReport) {
+        const navIndex = document.getElementById('nav-index');
+        const navReport = document.getElementById('nav-report');
+        
+        const activeClasses = ['bg-beneat-primary/10', 'text-beneat-primary', 'font-bold'];
+        const inactiveClasses = ['text-slate-500', 'hover:bg-slate-50'];
+        
+        if (navIndex && navReport) {
+            if (isReport) {
+                navReport.classList.add(...activeClasses);
+                navReport.classList.remove(...inactiveClasses);
+                navIndex.classList.remove(...activeClasses);
+                navIndex.classList.add(...inactiveClasses);
+            } else {
+                navIndex.classList.add(...activeClasses);
+                navIndex.classList.remove(...inactiveClasses);
+                navReport.classList.remove(...activeClasses);
+                navReport.classList.add(...inactiveClasses);
+            }
+        }
+    }
+
+    // ทำการรันทันที
+    setTimeout(() => {
+        let isReport = false;
+        // เช็คจาก GAS Location API เป็นหลัก
+        if (typeof google !== 'undefined' && google.script && google.script.url) {
+            google.script.url.getLocation(function(location) {
+                isReport = location.parameter && location.parameter.page === 'report';
+                applyMenuStyles(isReport);
+            });
+        } else {
+            // Fallback เช็คจากหน้าต่างเบราว์เซอร์
+            try {
+                isReport = window.top.location.search.includes('page=report');
+                applyMenuStyles(isReport);
+            } catch(e) {}
+        }
+    }, 150);
+</script>
